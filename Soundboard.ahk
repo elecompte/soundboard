@@ -249,7 +249,7 @@ PlaySound(path, *) {
         Player.controls.stop()
         if (Player.URL != path)
             Player.URL := path
-        Player.controls.currentPosition := 0
+        ; Stop followed by play restarts the same sound without seeking while loading.
         Player.controls.play()
         SetStatus("Playing: " SubStr(path, InStr(path, "\",, -1) + 1))
     } catch Error as err {
