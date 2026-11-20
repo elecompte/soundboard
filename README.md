@@ -34,6 +34,20 @@ For your existing example, choose `C:\Users\edlec\Downloads` to pick up `omg.m4a
 - Settings store names relative to the folder, not absolute filenames. Switching folders intentionally clears assignments to avoid applying old bindings to unrelated sounds.
 - This is a source-based AHK script, not a compiled executable.
 
+## Standalone Windows EXE (no AutoHotkey installation needed)
+
+The repository includes a Windows GitHub Actions workflow that compiles `Soundboard.ahk` into `Soundboard.exe` using Ahk2Exe. The compiled EXE includes the AHK runtime; the target Windows PC does **not** need AutoHotkey installed.
+
+1. Open the repository's **Actions** tab.
+2. Open **Build standalone Soundboard EXE**.
+3. Select **Run workflow**, or open a successful build created from a push to `main`.
+4. Download the **Soundboard-Windows-x64** artifact and extract its ZIP.
+5. Run `Soundboard.exe`, then select your sounds folder. Pin the running EXE to the taskbar if desired.
+
+The executable still depends on Windows' built-in Windows Media Player COM support for playing audio formats such as M4A. The GitHub Actions workflow has not been verified on a Windows runner yet.
+
+To compile locally instead, install the optional official Ahk2Exe compiler through AutoHotkey's Dash UI, and compile `Soundboard.ahk` for x64. You can run the resulting EXE on other compatible Windows PCs without AutoHotkey.
+
 ## Start with Windows (optional)
 
 Press `Win+R`, enter `shell:startup`, and put a shortcut to `Soundboard.ahk` in that folder.
