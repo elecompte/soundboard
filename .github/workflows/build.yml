@@ -1,0 +1,38 @@
+name: Build standalone Soundboard EXE
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Compile AutoHotkey v2 script
+        uses: CCCC-L/Action-Ahk2Exe@v1.0.0
+        with:
+          in: Soundboard.ahk
+          out: Soundboard.exe
+          base: 64
+
+      - name: Verify output
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'Soundboard.exe')) {
+            throw "Soundboard.exe was not generated."
+          }
+          Get-Item Soundboard.exe | Select-Object Name, Length
+
+      - name: Upload standalone executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: Soundboard-Windows-x64
+          path: Soundboard.exe
+          if-no-files-found: error
