@@ -12,6 +12,7 @@ global Bindings := Map()
 global ActiveHotkeys := Map()
 global SoundFiles := []
 global Player := ""
+global CurrentSoundPath := ""
 global MainGui := ""
 global SoundList := ""
 global HotkeyInput := ""
@@ -235,7 +236,7 @@ PlaySelected(*) {
 }
 
 PlaySound(path, *) {
-    global Player
+    global Player, CurrentSoundPath
     if !FileExist(path) {
         SetStatus("Missing file: " path)
         return
@@ -245,14 +246,28 @@ PlaySound(path, *) {
             Player := ComObject("WMPlayer.OCX")
             Player.settings.autoStart := false
         }
-        ; Stopping before playing means repeated presses restart the clip.
+
+        ; A second activation of the same hotkey stops active playback.
+        ; State 3 = Playing, 6 = Buffering, 9 = Transitioning.
+        ; Ended (8) and Stopped (1) must start again instead of toggling off.
+        if (CurrentSoundPath = path && (Player.playState = 3
+            || Player.playState = 6 || Player.playState = 9)) {
+            StopSound()
+            return
+        }
+
+        ; A different sound replaces the one currently playing.
         Player.controls.stop()
         if (Player.URL != path)
             Player.URL := path
-        ; Stop followed by play restarts the same sound without seeking while loading.
+        else
+            try Player.controls.currentPosition := 0
+
         Player.controls.play()
+        CurrentSoundPath := path
         SetStatus("Playing: " SubStr(path, InStr(path, "\",, -1) + 1))
     } catch Error as err {
+        CurrentSoundPath := ""
         SetStatus("Playback failed: " err.Message)
         MsgBox("Windows Media Player's COM component may be unavailable.`n`n" err.Message,
             "Playback error", "Icon!")
@@ -260,10 +275,11 @@ PlaySound(path, *) {
 }
 
 StopSound(*) {
-    global Player
+    global Player, CurrentSoundPath
     if IsObject(Player) {
         try Player.controls.stop()
     }
+    CurrentSoundPath := ""
     SetStatus("Stopped")
 }
 
