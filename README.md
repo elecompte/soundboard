@@ -9,7 +9,8 @@ A lightweight **Windows soundboard written entirely in AutoHotkey v2**. No Elect
 - Double-click to preview sounds; Play and Stop buttons
 - Record and assign a Ctrl/Alt/Shift hotkey for each sound
 - Hotkeys work globally while the GUI is hidden
-- Repeatedly pressing a hotkey restarts its clip
+- Press a sound's hotkey while it plays to stop it; press again to start from the beginning
+- Triggering a different sound stops the current clip and starts the new one
 - Save folder and hotkeys in `%APPDATA%\AHKSoundboard\settings.ini`
 - Close window to hide in the system tray; right-click tray icon to reopen or exit
 
